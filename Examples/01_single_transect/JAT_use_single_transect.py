@@ -15,7 +15,7 @@ from JAT.Jarkus_Analysis_Toolbox import Transects, Extraction
 ######################
 # LOAD SETTINGS
 ######################
-config = yaml.safe_load(open("C:/Users/cijzendoornvan/OneDrive - Delft University of Technology/Documents/DuneForce/JARKUS/JAT/Examples/01_single_transect/jarkus_01.yml"))
+config = yaml.safe_load(open("./Examples/01_single_transect/jarkus_01.yml"))
 
 #%%###################
 # LOAD DATA
@@ -48,7 +48,7 @@ elevation = pickle.load(open(config['outputdir'] + config['save locations']['Dir
 
 #%%
 # Create elevation plots for the available transects - saved as png and pickle
-data.get_transect_plot(config)
+data.get_transect_plot_dunes(config)
 
 # to reopen pickle file with figure:
 figx = pickle.load(open(config['outputdir'] + config['save locations']['DirB'] + 'Transect_' + transect + '.fig.pickle','rb'))    

@@ -57,3 +57,9 @@ __pycache__/
 *.rar
 *.tar
 *.zip
+/Examples/DuneVolumeS/B_transect_plots_profile
+/Examples/DuneVolumeS/B_transect_plots_profile2
+/Examples/DuneVolumeS/DV_plots
+/Examples/DuneVolumeS/DV_plots2
+/Examples/DuneVolumeS/DV_plots3
+/Examples/DuneVolumeS/B_transect_plots_profile3

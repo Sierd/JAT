@@ -172,7 +172,196 @@ class Transects:
             if os.path.isdir(config['outputdir'] + config['save locations']['DirA']) == False: # create folder for elevation dataframes if it does not exist
                 os.mkdir(config['outputdir'] + config['save locations']['DirA'])
             elevation_dataframe.to_pickle(config['outputdir'] + config['save locations']['DirA'] + trsct + '_elevation.pickle') # save elevation dataframe
-           
+
+    def get_transect_plot_dunes(self, config):
+        """Save plot with all coastal profiles for each requested transect
+
+        This file is a clone from get_transect_plot but now zoomed in on dune area.
+
+        For each requested transect a quickplot is created and saved (as png 
+        and pickle file) that shows all the requested years. The colors in the 
+        plot go from the start year in red to the end year in blue. Currently 
+        the axes are set automatically but this can be changed to user-defined 
+        limits in the future, which is mostly relevant for single transect 
+        plotting.
+    
+        Parameters
+        ----------
+        config : dict
+            The configuration file that contains the user-requested years and 
+            transects, reference to the jarkus dataset and the save locations.
+        """    
+            
+        import matplotlib.pyplot as plt
+        import matplotlib.colors as colors
+        import matplotlib.cm as cm
+        
+        crossshore = self.variables['cross_shore'][:]
+        
+        for i, trsct_idx in enumerate(self.transects_filtered_idxs):
+            trsct = str(self.transects_filtered[i])
+            
+            # Set figure layout
+            cen = 1/2.54
+            fig, ax = plt.subplots(figsize=(30*cen, 15*cen), dpi=300)
+            ax.tick_params(axis='x')
+            ax.tick_params(axis='y')
+            
+            jet = plt.get_cmap('jet') 
+            cNorm = colors.Normalize(vmin=min(self.years_filtered), vmax=max(self.years_filtered))
+            scalarMap = cm.ScalarMappable(norm=cNorm, cmap=jet)    
+
+            # Load and plot data per year
+            for j, yr in enumerate(self.years_filtered):
+                yr_idx = self.years_filtered_idxs[j]
+                colorVal = scalarMap.to_rgba(yr)
+                elevation = self.variables['altitude'][yr_idx, trsct_idx, :]
+                mask = (elevation.mask) | (elevation.data < -1)
+                ax.plot(crossshore[~mask], elevation[~mask], color=colorVal, label=str(yr))
+
+            # Load the corresponding pickle file and plot the dune toe
+            pickle_path = os.path.join(config['outputdir'], 'C_dimensions_dataframes_per_transect', f'Transect_{trsct}_dataframe.pickle')
+            with open(pickle_path, 'rb') as f:
+                data = pickle.load(f)
+                
+                ax.fill_between(crossshore[~mask], elevation[~mask], 3, 
+                                where=((crossshore[~mask] >= np.nanmean(data['Landward_x_variance'])) &
+                                        (crossshore[~mask] <= np.nanmax(data['Dunetoe_x_fix'])) &
+                                        (elevation[~mask] >= 3)),
+                                color='gray', alpha=0.5)
+                ax.axhline(3, color=(0.8, 0.8, 0.8), linestyle='--', zorder=0)
+                ax.axvline(np.nanmean(data['Landward_x_variance']), color=(0.8, 0.8, 0.8), linestyle='--', zorder=0)
+                ax.axvline(np.nanmax(data['Dunetoe_x_fix']), color=(0.8, 0.8, 0.8), linestyle='--', zorder=0)
+
+            ax.axhline(0, color='black', linestyle='--', zorder=0)
+            #ax.set_title(f"Transect {trsct}")
+            ax.set_xlabel("Cross shore distance [m]")
+            ax.set_ylabel("Elevation [m to datum]")
+            ax.invert_xaxis()
+
+            # Set x and y limit of plots
+            xrange=600
+            xoff=0.55
+            if True:
+                xlim = []
+                ylim = []
+            else:
+                xlim = [np.mean(ax.get_xlim())+xrange*xoff,np.mean(ax.get_xlim())-xrange*(1-xoff)]
+                ylim = [-2,31]
+                
+            if xlim:
+                ax.set_xlim(xlim)
+            if ylim:
+                ax.set_ylim(ylim)
+                
+            # Save figure as png and pickle in predefined directory
+            save_dir = os.path.join(config['outputdir'], config['save locations']['DirB'])
+            if not os.path.isdir(save_dir):
+                os.mkdir(save_dir)
+            fig.savefig(os.path.join(save_dir, f'Transect_{trsct}.png'))
+            plt.close()
+
+    def get_transect_plot_dunes2(self, config):
+        """Save plot with all coastal profiles for each requested transect
+
+        This file is a clone from get_transect_plot but now zoomed in on dune area.
+
+        For each requested transect a quickplot is created and saved (as png 
+        and picle file) that shows all the requested years. The colors in the 
+        plot go from the start year in red to the end year in blue. Currently 
+        the axes are set automatically but this can be changed to user-defined 
+        limits in the future, which is mostly relevant for single transect 
+        plotting.
+    
+        Parameters
+        ----------
+        config : dict
+            The configuration file that contains the user-requested years and 
+            transects, reference to the jarkus dataset and the save locations.
+        """    
+          
+        import matplotlib.pyplot as plt
+        import matplotlib.colors as colors
+        import matplotlib.cm as cm
+        
+        crossshore = self.variables['cross_shore'][:]
+        
+        for i, trsct_idx in enumerate(self.transects_filtered_idxs):
+            trsct = str(self.transects_filtered[i])
+            
+        	# Set figure layout
+            cen = 1/2.54
+            fig , ax = plt.subplots(figsize=(30*cen,15*cen),dpi=300)
+            #ax = fig.add_subplot(111)
+            ax.tick_params(axis='x')#, labelsize=20)
+            ax.tick_params(axis='y')#, labelsize=20)
+            
+            jet = plt.get_cmap('jet') 
+            cNorm  = colors.Normalize(vmin=min(self.years_filtered), vmax=max(self.years_filtered))
+            scalarMap = cm.ScalarMappable(norm=cNorm, cmap=jet)    
+
+            f = 1e6   
+            # Load and plot data per year
+            for i, yr in enumerate(self.years_filtered):
+                yr_idx = self.years_filtered_idxs[i]
+                
+                colorVal = scalarMap.to_rgba(yr)
+                elevation = self.variables['altitude'][yr_idx, trsct_idx, :]
+                mask = (elevation.mask) | (elevation.data<-1)
+                ax.plot(crossshore[~mask], elevation[~mask], color=colorVal, label = str(yr))#, linewidth = 2.5) # mask nans otherwise plotting goes wrong
+                
+
+            # load the corresponding pickl file from C:\Users\svries\Documents\GitHub\JAT\Examples\DuneVolumeS\C_dimensions_dataframes_per_transect
+            # and plot the dune toe
+            with open(r'C:\Users\svries\Documents\GitHub\JAT\Examples\DuneVolumeS\C_dimensions_dataframes_per_transect\Transect_' + str(trsct) + '_dataframe.pickle', 'rb') as f:
+                data = pickle.load(f)
+                
+                ax.fill_between(crossshore[~mask], elevation[~mask], 3, 
+                                where=((crossshore[~mask] >= np.nanmean(data['Landward_x_variance'])) &
+                                        (crossshore[~mask] <= np.nanmax(data['Dunetoe_x_fix'])) &
+                                        (elevation[~mask]>=3)),
+                                          color='gray', alpha=0.5)
+                # plot a horizontal line at 3 m
+                ax.axhline(3, color = (0.8, 0.8, 0.8), linestyle ='--', zorder=0)
+                # plot a vertical line at landward point
+                ax.axvline(np.nanmean(data['Landward_x_variance']), color = (0.8, 0.8, 0.8), linestyle ='--', zorder=0)
+                # plot a vertical line at dune toe
+                ax.axvline(np.nanmax(data['Dunetoe_x_fix']), color = (0.8, 0.8, 0.8), linestyle ='--', zorder=0)
+
+
+            ax.axhline(0, color = 'black', linestyle ='--', zorder=0)           
+            # Label the axes and provide a title
+            ax.set_title("Transect {}".format(str(trsct)))#, fontsize = 28)
+            ax.set_xlabel("Cross shore distance [m]")#, fontsize = 24)
+            ax.set_ylabel("Elevation [m to datum]")#, fontsize = 24)
+
+            # flip xaxis direction
+            ax.invert_xaxis()
+
+
+            
+            # Set x and y limit of plots - Leave lists empty (i.e. []) for automatic axis limits
+            # xlim = [crossshore[f]-10,crossshore[f]+590] # EXAMPLE: [-400,1000]
+            xlim = [] # EXAMPLE: [-400,1000]
+
+            ylim = [] # EXAMPLE: [-10,22]
+            if len(xlim) != 0:
+                ax.set_xlim(xlim)
+            if len(ylim) != 0:
+                ax.set_ylim(ylim)
+                
+            # Save figure as png and pickle in predefined directory
+            # the advantage of a pickle file is that the figure can be reloaded and altered
+            if os.path.isdir(config['outputdir'] + config['save locations']['DirB']) == False:
+                os.mkdir(config['outputdir'] + config['save locations']['DirB'])
+            fig.savefig(config['outputdir'] + config['save locations']['DirB'] + 'Transect_' + str(trsct) + '.png')
+            #pickle.dump(fig, open(config['outputdir'] + config['save locations']['DirB'] + 'Transect_' + str(trsct) + '.fig.pickle', 'wb'))
+            
+            # close figure
+            plt.close()
+            
+
+
     def get_transect_plot(self, config):
         """Save plot with all coastal profiles for each requested transect
 
@@ -565,12 +754,12 @@ class Extraction:
             # Retrieve normalization type that should be applied from the configuration file
             norm_type = self.config['user defined']['normalization']['type']
             if norm_type == 'mean':
-                for i, col in dimensions.iteritems():
+                for i, col in dimensions.items():
                     # Get the mean cross-shore location per transect and subtract that from the values of the variable for each transect
                     normalized.loc[:, i] = col - col.mean()
             elif norm_type == 'norm_year':
                 norm_year = self.config['user defined']['normalization'][' year']    
-                for i, col in dimensions.iteritems():
+                for i, col in dimensions.items():
                     # Get norm value for the cross-shore location in the norm year and subtract that from the values of the variable for each transect
                     normalized.loc[:, i] = col - col[norm_year]
             
