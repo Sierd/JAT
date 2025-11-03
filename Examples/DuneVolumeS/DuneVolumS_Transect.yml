@@ -7,7 +7,7 @@ years:
 
 transects: 
     # Choose the type of analysis: single, multiple, range or all
-    type: all 
+    type: multiple 
     # below the retrieval request for the single, multiple and range type are defined
     # Note! If type is set to 'all' it overrides the input below 
     single: 8008000 # for single
@@ -38,7 +38,7 @@ data locations: # When saved locally fill in directory of dataset (and leave out
    Titles: plot_titles.yml # not necessary for this example
 save locations:
    DirA: A_elevation_dataframes\ # This is combined with root to find directory
-   DirB: B_transect_plots_profile2\
+   DirB: B_transect_plots_profile4\
    DirC: C_dimensions_dataframes_per_transect\
    DirD: D_dataframes_per_dimension\
    DirE: E_filtered_dataframes\

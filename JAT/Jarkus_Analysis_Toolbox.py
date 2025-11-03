@@ -203,7 +203,7 @@ class Transects:
             
             # Set figure layout
             cen = 1/2.54
-            fig, ax = plt.subplots(figsize=(30*cen, 15*cen), dpi=300)
+            fig, ax = plt.subplots(figsize=(15*cen, 7*cen), dpi=300)
             ax.tick_params(axis='x')
             ax.tick_params(axis='y')
             
@@ -234,7 +234,7 @@ class Transects:
                 ax.axvline(np.nanmax(data['Dunetoe_x_fix']), color=(0.8, 0.8, 0.8), linestyle='--', zorder=0)
 
             ax.axhline(0, color='black', linestyle='--', zorder=0)
-            #ax.set_title(f"Transect {trsct}")
+            ax.set_title(f"Transect {trsct}")
             ax.set_xlabel("Cross shore distance [m]")
             ax.set_ylabel("Elevation [m to datum]")
             ax.invert_xaxis()
@@ -242,7 +242,7 @@ class Transects:
             # Set x and y limit of plots
             xrange=600
             xoff=0.55
-            if True:
+            if False:
                 xlim = []
                 ylim = []
             else:
@@ -253,12 +253,19 @@ class Transects:
                 ax.set_xlim(xlim)
             if ylim:
                 ax.set_ylim(ylim)
+
+                     
+            # Added this to get the legend to work
+            handles,labels = ax.get_legend_handles_labels()
+            # ax.legend(handles, labels, loc='upper right',ncol=5, bbox_to_anchor=(1, 1), fontsize=8)#, fontsize = 20)
+            ax.legend(loc='upper left', bbox_to_anchor=(-0.1, -0.25), fontsize=8,ncol=7)
+
                 
             # Save figure as png and pickle in predefined directory
             save_dir = os.path.join(config['outputdir'], config['save locations']['DirB'])
             if not os.path.isdir(save_dir):
                 os.mkdir(save_dir)
-            fig.savefig(os.path.join(save_dir, f'Transect_{trsct}.png'))
+            fig.savefig(os.path.join(save_dir, f'Transect_{trsct}.png'),bbox_inches='tight')
             plt.close()
 
     def get_transect_plot_dunes2(self, config):
