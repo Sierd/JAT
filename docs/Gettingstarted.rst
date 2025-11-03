@@ -9,11 +9,11 @@ Or use git and navigate to a convenient location and clone the repository::
 
   $ git clone https://github.com/christavanijzendoorn/JAT.git
 
-Open anaconda prompt and activate the environment you created or want to use (are you not able to follow? Go to :doc:`Help`). The JAT requires Python 3.7 and is not compatible with Python 3.8, so make sure to use the right version in your environment.
+Open anaconda prompt and activate the environment you created or want to use (are you not able to follow? Go to :doc:`Help`). The JAT requires Python 3.7 and is not compatible with Python 3.8, so make sure to use the right version in your environment. As of March 2025, a nopybeach branch of the JAT is available that is compatible with python 3.12 (https://github.com/christavanijzendoorn/JAT/tree/nopybeach). Use of this branch is recommended! It does not support the functionalities that depend on pybeach, which is fine for most applications.
 
 Navigate to the directory where the Jarkus Ananlysis Toolbox is located and the `setup.py` file is present. Use the following command to install the JAT::
  
-  $  python setup.py install
+  $  pip install .
 
 Using the JAT
 --------------
@@ -84,13 +84,15 @@ When you want to access large amounts of data (i.e. many transects and years) or
 
 When you want to work with the *dune toes* that were extracted using the second derivative method. These can be found `here`_.
 
-.. _here: https://opendap.deltares.nl/thredds/fileServer/opendap/rijkswaterstaat/DuneFoot/DF.nc
+.. _here: https://opendap.deltares.nl/thredds/fileServer/opendap/rijkswaterstaat/DuneFoot/DF_2nd_deriv.nc
 
 **Nourishment**
 
 `This`_ is where the *nourishment* database can be found.
 
-.. _This: https://opendap.tudelft.nl/thredds/dodsC/data2/deltares/rijkswaterstaat/suppleties/nourishments.nc.html
+.. _This: https://opendap.deltares.nl/thredds/fileServer/opendap/rijkswaterstaat/suppleties/nourishments.nc
+
+Note: If any of data links don't work, go to https://opendap.deltares.nl/thredds/catalog/opendap/rijkswaterstaat/catalog.html. Under the jarkus, DuneFoot and suppleties folders you'll hopefully be able to find the right files.
 
 **LocFilter**
 
