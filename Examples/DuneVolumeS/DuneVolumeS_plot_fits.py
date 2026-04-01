@@ -2,7 +2,7 @@
 import os
 import pickle
 import pwlf
-import numpy as np
+#import numpy as np
 import matplotlib.pyplot as plt
 
 # Function to process and plot data from a pickle file
@@ -22,7 +22,7 @@ def process_and_plot(file_path, output_folder):
 
         # Initatie the basic plot
         cm = 1 / 2.54
-        fig, ax = plt.subplots(figsize=(10 * cm, 8 * cm))
+        fig, ax = plt.subplots(figsize=(20 * cm, 15 * cm))
         ax.plot(x, y, 'o', label='Data')
 
         # Initialize piecewise linear fit with the data
@@ -33,49 +33,37 @@ def process_and_plot(file_path, output_folder):
         y_hat1 = my_pwlf.predict(x)
 
         # plot the linear fit with 1 line segment
-        # ax.plot(x, y_hat1, '-', label='Linear Fit R$^2$ = ' + str(my_pwlf.r_squared())[0:5] +
-        # '\nSlope = ' + str(my_pwlf.slopes[0])[0:3] + ' m$^3$/m/year')
+        ax.plot(x, y_hat1, '-', label='Linear Fit R$^2$ = ' + str(my_pwlf.r_squared())[0:5] +
+        '\nSlope = ' + str(my_pwlf.slopes[0])[0:3] + ' m$^3$/m/year')
 
         # Fit the data with 2 line segments (piecewise linear fit)
         res2 = my_pwlf.fit(2)
         y_hat2 = my_pwlf.predict(x)
 
-        # plot the linear fit with 2 line segment2
-        # ax.plot(x, y_hat2, '-', label='Piecewise Linear Fit R$^2$ = ' + str(my_pwlf.r_squared())[0:5] +
-        #         '\nSlope1 = ' + str(my_pwlf.slopes[0])[0:3] + ' m$^3$/m/year' +
-        #         '\nSlope2 = ' + str(my_pwlf.slopes[1])[0:3] + ' m$^3$/m/year')
+        # plot the linear fit with 1 line segment
+        ax.plot(x, y_hat2, '-', label='Piecewise Linear Fit R$^2$ = ' + str(my_pwlf.r_squared())[0:5] +
+                '\nSlope1 = ' + str(my_pwlf.slopes[0])[0:3] + ' m$^3$/m/year' +
+                '\nSlope2 = ' + str(my_pwlf.slopes[1])[0:3] + ' m$^3$/m/year')
 
         # Add vertical line for the optimal breakpoint
-        # ax.axvline(x=res2[1], color='r', linestyle='--', zorder=0, label='Optimal breakpoint ' + str(res2[1].round())[0:4])
+        ax.axvline(x=res2[1], color='r', linestyle='--', zorder=0, label='Optimal breakpoint ' + str(res2[1].round())[0:4])
 
         # Set plot title and labels
-        # ax.set_title('DuneToe fix' + ' Transect ' + file_path.split('_')[1].split('.')[0])
-        ax.set_title(' Transect ID' + file_path.split('_')[5].split('.')[0])
+        #ax.set_title('DuneToe fix' + ' Transect ' + file_path.split('_')[1].split('.')[0])
         ax.set_ylabel('Dune Volume [m$^3$/m]')
         ax.set_xlabel('Year')
 
         # Add legend and save plot
-        # place legend outside above the plot
-        # ax.legend(loc='upper left', bbox_to_anchor=(0.3, -0.2), fontsize=8)
-
-        dv_range = 550
-        # read the xlim from the figure
-        ylim = [np.mean(ax.get_ylim())-dv_range, np.mean(ax.get_ylim())+dv_range]
-        ax.set_ylim(ylim)
-
-
-
-        
-        # ax.legend()
+        ax.legend()
         # save figure in pdf format keeping the figure size
-        # plt.savefig(os.path.join(output_folder, 'DuneToe_fix_' + file_path.split('_')[5].split('.')[0] + '.pdf'))
-        plt.savefig(os.path.join(output_folder, 'DuneToe_fix_' + file_path.split('_')[5].split('.')[0] + '.png'), bbox_inches='tight',dpi=300)
+        plt.savefig(os.path.join(output_folder, 'DuneToe_fix_' + file_path.split('_')[5].split('.')[0] + '.png'))
+        # plt.savefig(os.path.join(output_folder, 'DuneToe_fix_' + file_path.split('_')[5].split('.')[0] + '.png'))
         plt.close()
 
 # Main function to loop through files and process them
 def main():
-    folder = r'C:\Users\svries\Documents\GitHub\JAT\Examples\DuneVolumeS\C_dimensions_dataframes_per_transect2'
-    output_folder = r'C:\Users\svries\Documents\GitHub\JAT\Examples\DuneVolumeS\DV_plots5'
+    folder = r'C:\Users\svries\GitHub\JAT\Examples\DuneVolumeS\C_dimensions_dataframes_per_transect3'
+    output_folder = r'C:\Users\svries\GitHub\JAT\Examples\DuneVolumeS\DV_plots4'
 
     for file in os.listdir(folder):
         if file.endswith('.pickle'):

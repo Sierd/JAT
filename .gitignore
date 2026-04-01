@@ -17,7 +17,8 @@ B2_transect_plots_with_dune_toe
 C_dimensions_dataframes_per_transect/
 D_dataframes_per_dimension/
 E_filtered_dataframes/
-
+#Examples/DuneVolumeS/
+For_Alex/
 *.pickle
 
 # Documentation #
@@ -57,6 +58,7 @@ __pycache__/
 *.rar
 *.tar
 *.zip
+
 /Examples/DuneVolumeS/B_transect_plots_profile
 /Examples/DuneVolumeS/B_transect_plots_profile2
 /Examples/DuneVolumeS/DV_plots
